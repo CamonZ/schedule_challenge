@@ -17,13 +17,13 @@ function expandTimeBlockInSlots(block, duration){
   var millisDuration = duration * 60000; //60s * 1000ms / s
   var millisHalfHour = 30 * 60000;
   var slots = [];
-  var timeStamp = new Date(block.date + ' ' + block.chunk_start_time);
-  var endDateTime = new Date(block.date + ' ' + block.block_end_time);
+  var timeStamp = new Date(block.date + ' ' + block.cleaner_blocks_availability.chunk_start_time);
+  var endDateTime = new Date(block.date + ' ' + block.cleaner_blocks_availability.block_end_time);
 
 
   //let's step every 30 mins and add a new slot.
   while((endDateTime.getTime() - timeStamp.getTime()) > millisDuration){
-    slots.push({start_time: timeStamp.getHours() + ':' + timeStamp.getMinutes(), block_id: block.id });
+    slots.push({start_time: timeStamp.getHours() + ':' + timeStamp.getMinutes(), block_id: block.cleaner_blocks_availability.id });
     timeStamp.setTime(timeStamp.getTime() + millisHalfHour);
   }
   return slots;
@@ -59,7 +59,7 @@ exports.geolocated_for_range = function(req, res, next){
               _.each(expandTimeBlockInSlots(block, q.duration), function(slot){ slots[date].push(slot); });
 
             }
-            else{ slots.push({start_time: block.chunk_start_time, block_id: block.id })}
+            else{ slots.push({start_time: block.cleaner_blocks_availability.chunk_start_time, block_id: cleaner_blocks_availability.id })}
           });
           //uniq the array to have just 1st slot for all the blocks for a given start time.
           slots[date] = _.uniq(slots[date], false, function(slot){ return slot.start_time; });
