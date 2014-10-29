@@ -7,6 +7,16 @@ var bodyParser = require('body-parser');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
+var slots = require('./routes/slots');
+
+var mysql = require('mysql'),
+    myConnection = require('express-myconnection'),
+    dbOptions = {
+      host: 'localhost',
+      user: 'root',
+      port: '3306',
+      database: 'schedule_query'
+    }
 
 var app = express();
 
@@ -22,8 +32,11 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(myConnection(mysql, dbOptions, 'single'));
+
 app.use('/', routes);
 app.use('/users', users);
+app.use('/slots', slots);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
